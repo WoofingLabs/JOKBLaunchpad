@@ -1023,24 +1023,47 @@
             }
 
             if (!selectedMemeCoinAddress) {
-                status.innerText = "Please select a meme coin.";
+                status.innerText = "Please select a meme coin to launch liquidity.";
                 dogMessage.innerText = getRandomMessage('invalidInput');
                 return;
             }
 
             try {
-                const hasLiquidity = await jokbLaunchpadContract.methods.hasLiquidityAdded(selectedMemeCoinAddress).call();
+                const checksumAddress = web3.utils.toChecksumAddress(selectedMemeCoinAddress);
+                const isMemeCoin = await jokbLaunchpadContract.methods.isMemeCoin(checksumAddress).call();
+                if (!isMemeCoin) {
+                    status.innerText = "Selected coin is not a valid meme coin.";
+                    dogMessage.innerText = getRandomMessage('invalidMemeCoin');
+                    return;
+                }
+
+                const hasLiquidity = await jokbLaunchpadContract.methods.hasLiquidityAdded(checksumAddress).call();
                 if (hasLiquidity) {
                     status.innerText = "Liquidity already added for this coin.";
                     dogMessage.innerText = getRandomMessage('liquidityExists');
                     return;
                 }
 
+                const contractJOKBBalance = await jokbContract.methods.balanceOf(JOKBlaunchpadAddress).call();
+                const requiredJOKB = web3.utils.toWei('20', 'ether');
+                if (web3.utils.toBN(contractJOKBBalance).lt(web3.utils.toBN(requiredJOKB))) {
+                    status.innerText = "Insufficient JOKB in contract for liquidity.";
+                    dogMessage.innerText = getRandomMessage('insufficientJOKB');
+                    return;
+                }
+
+                const memeCoinInfo = await jokbLaunchpadContract.methods.userMemeCoins(checksumAddress).call();
+                if (memeCoinInfo.deployTime === '0' || memeCoinInfo.memeCoin.toLowerCase() !== checksumAddress.toLowerCase()) {
+                    status.innerText = "You are not the creator of this meme coin.";
+                    dogMessage.innerText = getRandomMessage('notCreator');
+                    return;
+                }
+
                 launchButton.disabled = false;
-                status.innerText = "Ready to launch liquidity.";
+                status.innerText = "Ready to launch liquidity for selected meme coin.";
                 dogMessage.innerText = "Woof! Ready to launch, pup!";
             } catch (error) {
-                status.innerText = "Error checking liquidity status.";
+                status.innerText = "Error checking liquidity status. Please try again.";
                 dogMessage.innerText = getRandomMessage('invalidMemeCoin');
             }
         }
@@ -1057,8 +1080,15 @@
             }
 
             if (!selectedMemeCoinAddress) {
-                status.innerText = "Please select a meme coin.";
+                status.innerText = "Please select a meme coin to launch liquidity.";
                 dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            const confirmLaunch = confirm(`Are you sure you want to launch liquidity for the selected meme coin (${selectedMemeCoinAddress})? This will provide 20 JOKB from the contract and 1,000,000,000 MEME COIN from you to the liquidity pool.`);
+            if (!confirmLaunch) {
+                status.innerText = "Liquidity launch canceled.";
+                dogMessage.innerText = getRandomMessage('userDenied');
                 return;
             }
 
@@ -1066,17 +1096,36 @@
                 const checksumAddress = web3.utils.toChecksumAddress(selectedMemeCoinAddress);
                 launchButton.disabled = true;
                 launchButton.innerHTML = 'Launching... <span class="spinner"></span>';
-                status.innerText = "Launching liquidity...";
+                status.innerText = "Preparing to launch liquidity...";
                 dogMessage.innerText = getRandomMessage('liquidityStart');
 
+                const gasPrice = await web3.eth.getGasPrice();
                 const estimatedGas = await jokbLaunchpadContract.methods.addLiquidity(checksumAddress).estimateGas({ from: account });
+                const gasLimit = Math.ceil(estimatedGas * 1.5);
+                const nativeBalance = await web3.eth.getBalance(account);
+                const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(gasLimit));
+                if (web3.utils.toBN(nativeBalance).lt(gasCost)) {
+                    status.innerText = "Insufficient OKB for gas fees.";
+                    dogMessage.innerText = getRandomMessage('insufficientGas');
+                    return;
+                }
+
+                const contractJOKBBalance = await jokbContract.methods.balanceOf(JOKBlaunchpadAddress).call();
+                const requiredJOKB = web3.utils.toWei('20', 'ether');
+                if (web3.utils.toBN(contractJOKBBalance).lt(web3.utils.toBN(requiredJOKB))) {
+                    status.innerText = "Insufficient JOKB in contract for liquidity.";
+                    dogMessage.innerText = getRandomMessage('insufficientJOKB');
+                    return;
+                }
+
                 const tx = await jokbLaunchpadContract.methods.addLiquidity(checksumAddress).send({
                     from: account,
-                    gas: web3.utils.toHex(Math.min(estimatedGas * 2, 10000000))
+                    gas: web3.utils.toHex(gasLimit),
+                    gasPrice: gasPrice
                 });
                 await waitForTransaction(tx.transactionHash);
 
-                status.innerText = "Liquidity launched successfully!";
+                status.innerText = "Liquidity launched successfully! Trading enabled.";
                 dogMessage.innerText = getRandomMessage('liquiditySuccess');
                 await updateRecentMemeCoins();
             } catch (error) {
@@ -1084,13 +1133,13 @@
                     status.innerText = "Transaction canceled by user.";
                     dogMessage.innerText = getRandomMessage('userDenied');
                 } else if (error.message.includes('insufficient funds for gas')) {
-                    status.innerText = "Insufficient OKB for gas.";
+                    status.innerText = "Insufficient OKB for gas fees.";
                     dogMessage.innerText = getRandomMessage('insufficientGas');
                 } else if (error.message.includes('Meme coin does not exist')) {
-                    status.innerText = "Invalid meme coin.";
+                    status.innerText = "Invalid meme coin selected.";
                     dogMessage.innerText = getRandomMessage('invalidMemeCoin');
                 } else if (error.message.includes('Meme coin not created by user')) {
-                    status.innerText = "You didn't create this coin.";
+                    status.innerText = "You are not the creator of this meme coin.";
                     dogMessage.innerText = getRandomMessage('notCreator');
                 } else if (error.message.includes('Liquidity already added')) {
                     status.innerText = "Liquidity already added for this coin.";
