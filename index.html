@@ -993,47 +993,29 @@
             }
         }
 
-        async function checkLiquidityStatus() {
-            const launchButton = document.getElementById('launchButton');
-            const status = document.getElementById('networkStatus');
-            const dogMessage = document.getElementById('dogMessage');
+async function checkLiquidityStatus() {
+    const launchButton = document.getElementById('launchButton');
+    const status = document.getElementById('networkStatus');
+    const dogMessage = document.getElementById('dogMessage');
 
-            launchButton.disabled = true;
+    launchButton.disabled = true;
 
-            if (!web3 || !account) {
-                status.innerText = "Please connect wallet first.";
-                dogMessage.innerText = getRandomMessage('connectFail');
-                return;
-            }
+    if (!web3 || !account) {
+        status.innerText = "Please connect wallet first.";
+        dogMessage.innerText = getRandomMessage('connectFail');
+        return;
+    }
 
-            if (!selectedMemeCoinAddress) {
-                status.innerText = "Please select a meme coin.";
-                dogMessage.innerText = getRandomMessage('invalidInput');
-                return;
-            }
+    if (!selectedMemeCoinAddress) {
+        status.innerText = "Please select a meme coin.";
+        dogMessage.innerText = getRandomMessage('invalidInput');
+        return;
+    }
 
-            try {
-                const hasLiquidity = await jokbLaunchpadContract.methods.hasLiquidityAdded(selectedMemeCoinAddress).call();
-                if (hasLiquidity) {
-                    status.innerText = "Liquidity already added for this coin.";
-                    dogMessage.innerText = getRandomMessage('liquidityExists');
-                    return;
-                }
-                const jokbBalance = await jokbContract.methods.balanceOf(JOKBlaunchpadAddress).call();
-                const requiredJOKB = web3.utils.toWei('20', 'ether');
-                if (web3.utils.toBN(jokbBalance).lt(web3.utils.toBN(requiredJOKB))) {
-                    status.innerText = "Insufficient JOKB in contract. Please deposit more.";
-                    dogMessage.innerText = getRandomMessage('insufficientJOKB');
-                    return;
-                }
-                launchButton.disabled = false;
-                status.innerText = "Ready to launch liquidity.";
-                dogMessage.innerText = "Woof! Ready to launch, pup!";
-            } catch (error) {
-                status.innerText = "Error checking liquidity status.";
-                dogMessage.innerText = getRandomMessage('invalidMemeCoin');
-            }
-        }
+    launchButton.disabled = false;
+    status.innerText = "Ready to launch liquidity.";
+    dogMessage.innerText = "Woof! Ready to launch, pup!";
+}
 
         async function launchLiquidity() {
             const status = document.getElementById('networkStatus');
