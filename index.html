@@ -1,1 +1,1174 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOKB Launchpad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="https://woofswap.finance/image/tokens/star.png" type="image/x-icon" />
+    <style>
+        :root {
+            --primary-color: #ff9100;
+            --secondary-color: #ff6f61;
+            --gradient-bg: linear-gradient(180deg, #1e1e2f 0%, #2a2a3d 100%);
+            --card-bg: #2c2f48;
+            --input-bg: #373b5c;
+            --text-color: #ffffff;
+            --border-radius: 15px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .connect-section button {
+            padding: 12px;
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .connect-section button:hover { background: #e68a00; }
+        .input-box {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .input-box label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            color: #ff9100;
+        }
+        .percentage-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .percentage-button {
+            padding: 8px;
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            width: 22%;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .percentage-button:hover { background: #e68a00; }
+        .action-button {
+            padding: 15px;
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .action-button:disabled {
+            background: #4a4f7a;
+            cursor: not-allowed;
+        }
+        .action-button:hover:not(:disabled) { background: #e68a00; }
+        .status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .token-info {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .token-info p {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+        .copyable-address {
+            cursor: pointer;
+            color: #ff9100;
+            text-decoration: underline;
+        }
+        .copyable-address:hover {
+            color: #e68a00;
+        }
+        .dog-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dog-section img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .dog-message {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 5px;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .meme-coin-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .meme-coin-card {
+            background: var(--input-bg);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .meme-coin-card:hover {
+            background: #e68a00;
+        }
+        .meme-coin-card.selected {
+            background: #e68a00;
+            border: 2px solid #ffffff;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .header { font-size: 1.1em; }
+            .percentage-button { font-size: 0.7em; padding: 6px; }
+            .meme-coin-card { font-size: 0.8em; padding: 8px; }
+            .dog-section img { width: 50px; height: 50px; }
+            .dog-message { font-size: 0.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">JOKB Launchpad</div>
+        <div class="connect-section">
+            <button id="connectWalletButton">Connect Wallet</button>
+            <div id="networkStatus" class="status">Click to connect...</div>
+        </div>
+        <div class="input-box">
+            <label>Balances</label>
+            <div class="balance-row"><span>OKB</span><span id="okbBalance">Balance: 0</span></div>
+            <div class="balance-row"><span>JOKB</span><span id="jokbBalance">Balance: 0</span></div>
+        </div>
+        <div class="input-box">
+            <label>Deposit OKB for JOKB</label>
+            <input type="number" id="depositAmount" placeholder="Amount of OKB" min="0" step="any">
+            <div class="percentage-buttons">
+                <button class="percentage-button" onclick="setDepositPercentage(0.25)">25%</button>
+                <button class="percentage-button" onclick="setDepositPercentage(0.5)">50%</button>
+                <button class="percentage-button" onclick="setDepositPercentage(0.75)">75%</button>
+                <button class="percentage-button" onclick="setDepositPercentage(1)">Max</button>
+            </div>
+            <button class="action-button" id="depositButton">Deposit</button>
+        </div>
+        <div class="input-box">
+            <label>Withdraw JOKB for OKB</label>
+            <input type="number" id="withdrawAmount" placeholder="Amount of JOKB" min="0" step="any">
+            <div class="percentage-buttons">
+                <button class="percentage-button" onclick="setWithdrawPercentage(0.25)">25%</button>
+                <button class="percentage-button" onclick="setWithdrawPercentage(0.5)">50%</button>
+                <button class="percentage-button" onclick="setWithdrawPercentage(0.75)">75%</button>
+                <button class="percentage-button" onclick="setWithdrawPercentage(1)">Max</button>
+            </div>
+            <button class="action-button" id="withdrawButton">Withdraw</button>
+        </div>
+        <div class="input-box">
+            <label>Deploy Meme Coin</label>
+            <input type="text" id="memeCoinName" placeholder="Token Name (e.g., DogeCoin)">
+            <input type="text" id="memeCoinSymbol" placeholder="Token Symbol (e.g., DOGE)">
+            <button class="action-button" id="deployMemeCoinButton">Deploy Meme Coin</button>
+        </div>
+        <div class="input-box">
+            <label>Add Liquidity</label>
+            <div class="meme-coin-list" id="memeCoinList">
+                <div class="meme-coin-card">No meme coins available. Deploy one above!</div>
+            </div>
+            <div class="token-info">
+                <p>Deployment Tips: Contract provides 20 JOKB, user provides 1,000,000,000 MEME COIN</p>
+            </div>
+            <button class="action-button" id="launchButton" disabled>Launch</button>
+        </div>
+        <div class="input-box">
+            <label>Recent Meme Coins (Up to 20)</label>
+            <div class="token-info" id="recentMemeCoins">
+                <p>No meme coins deployed yet.</p>
+            </div>
+        </div>
+        <div class="dog-section">
+            <img src="https://woofswap.finance/image/tokens/star.png" alt="JOKB">
+            <div class="dog-message" id="dogMessage">"Woof! Connect your wallet to manage tokens, pup!"</div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        const JOKBlaunchpadAddress = '0x6Cb7d827c9Cb1055CdB5d3774dF4120EbB794155';
+        const JOKBAddress = '0x6Aeb9F00CEeF2a459498C56AEEBd083409CB1849';
+
+        const JOKBlaunchpadAbi = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "memeCoin", "type": "address"},
+                    {"indexed": false, "internalType": "string", "name": "name", "type": "string"},
+                    {"indexed": false, "internalType": "string", "name": "symbol", "type": "string"}
+                ],
+                "name": "MemeCoinDeployed",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "pair", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
+                ],
+                "name": "LiquidityAdded",
+                "type": "event"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "memeCoinAddress", "type": "address"}
+                ],
+                "name": "addLiquidity",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "string", "name": "_name", "type": "string"},
+                    {"internalType": "string", "name": "_symbol", "type": "string"}
+                ],
+                "name": "deployMemeCoin",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "_amount", "type": "uint256"}
+                ],
+                "name": "depositWOKB",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "user", "type": "address"}
+                ],
+                "name": "getRecentMemeCoins",
+                "outputs": [
+                    {
+                        "components": [
+                            {"internalType": "address", "name": "memeCoin", "type": "address"},
+                            {"internalType": "string", "name": "name", "type": "string"},
+                            {"internalType": "string", "name": "symbol", "type": "string"},
+                            {"internalType": "uint256", "name": "deployTime", "type": "uint256"},
+                            {"internalType": "address", "name": "pair", "type": "address"},
+                            {"internalType": "uint256", "name": "liquidity", "type": "uint256"}
+                        ],
+                        "internalType": "struct JOKBlaunchpad.MemeCoinInfo[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "memeCoinAddress", "type": "address"}
+                ],
+                "name": "hasLiquidityAdded",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "name": "isMemeCoin",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "name": "userMemeCoins",
+                "outputs": [
+                    {"internalType": "address", "name": "memeCoin", "type": "address"},
+                    {"internalType": "string", "name": "name", "type": "string"},
+                    {"internalType": "string", "name": "symbol", "type": "string"},
+                    {"internalType": "uint256", "name": "deployTime", "type": "uint256"},
+                    {"internalType": "address", "name": "pair", "type": "address"},
+                    {"internalType": "uint256", "name": "liquidity", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        const JOKBAbi = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "src", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "guy", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "Approval",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "dst", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "Deposit",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "src", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "dst", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "Transfer",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "src", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "Withdrawal",
+                "type": "event"
+            },
+            {
+                "stateMutability": "payable",
+                "type": "receive"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "", "type": "address"},
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "name": "allowance",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "guy", "type": "address"},
+                    {"internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "approve",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "name": "balanceOf",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [
+                    {"internalType": "uint8", "name": "", "type": "uint8"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "deposit",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "guy", "type": "address"},
+                    {"internalType": "uint256", "name": "addedValue", "type": "uint256"}
+                ],
+                "name": "increaseAllowance",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "guy", "type": "address"},
+                    {"internalType": "uint256", "name": "subtractedValue", "type": "uint256"}
+                ],
+                "name": "decreaseAllowance",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "name",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "symbol",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "totalSupply",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "dst", "type": "address"},
+                    {"internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "transfer",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "src", "type": "address"},
+                    {"internalType": "address", "name": "dst", "type": "address"},
+                    {"internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "transferFrom",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "wad", "type": "uint256"}
+                ],
+                "name": "withdraw",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+
+        const chains = {
+            XLayer: {
+                chainId: 196,
+                chainName: 'X Layer mainnet',
+                rpcUrl: 'https://rpc.xlayer.tech',
+                blockExplorer: 'https://www.okx.com/web3/explorer/xlayer',
+                nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 }
+            }
+        };
+
+        let web3, account, jokbLaunchpadContract, jokbContract, selectedMemeCoinAddress = '';
+
+        const dogMessages = {
+            connectSuccess: ["Woof! Wallet connected, ready to manage tokens, pup!", "Arf! You're in, let's roll!", "Bark! Wallet's ready, time to play!"],
+            connectFail: ["Woof! Couldn't connect wallet, try again, pup!", "Arf! Wallet connection failed, give it another go!", "Bark! Something went wrong, check your wallet!"],
+            depositStart: ["Woof! Depositing OKB, hold tight, pup!", "Arf! Wrapping your tokens now!", "Bark! Deposit in progress!"],
+            depositSuccess: ["Woof! OKB deposited, JOKB received, pup!", "Arf! Tokens wrapped successfully!", "Bark! Success! JOKB in your wallet!"],
+            depositFail: ["Woof! Deposit failed, check OKB balance, pup!", "Arf! Something went wrong, try again!", "Bark! Deposit hit a snag, retry!"],
+            withdrawStart: ["Woof! Withdrawing JOKB, hold tight, pup!", "Arf! Unwrapping your tokens now!", "Bark! Withdrawal in progress!"],
+            withdrawSuccess: ["Woof! JOKB withdrawn, OKB received, pup!", "Arf! Tokens unwrapped successfully!", "Bark! Success! OKB in your wallet!"],
+            withdrawFail: ["Woof! Withdrawal failed, check JOKB balance, pup!", "Arf! Something went wrong, try again!", "Bark! Withdrawal hit a snag, retry!"],
+            deployStart: ["Woof! Deploying your meme coin, hold tight, pup!", "Arf! Creating your token now!", "Bark! Deployment in progress!"],
+            deploySuccess: ["Woof! Meme coin deployed, you're rolling, pup!", "Arf! Your token is live!", "Bark! Success! Meme coin created!"],
+            deployFail: ["Woof! Deployment failed, check details, pup!", "Arf! Something went wrong, try again!", "Bark! Deployment hit a snag, retry!"],
+            liquidityStart: ["Woof! Launching liquidity, hold tight, pup!", "Arf! Setting up the pool now!", "Bark! Launch in progress!"],
+            liquiditySuccess: ["Woof! Liquidity launched, trading enabled, pup!", "Arf! Pool is live!", "Bark! Success! Liquidity added!"],
+            liquidityFail: ["Woof! Launch failed, check tokens, pup!", "Arf! Something went wrong, try again!", "Bark! Launch hit a snag, retry!"],
+            invalidInput: ["Woof! Invalid input, check your amount, pup!", "Arf! Something's not right, check your input!", "Bark! Need a valid amount to proceed!"],
+            userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try that again!"],
+            copySuccess: ["Woof! Address copied to clipboard, pup!", "Arf! Copied, you're good to go!", "Bark! Address copied successfully!"],
+            copyFail: ["Woof! Failed to copy address, try again, pup!", "Arf! Copy failed, give it another go!", "Bark! Couldn't copy, check your browser!"],
+            liquidityExists: ["Woof! Liquidity already added for this coin, pup!", "Arf! Pool exists, pick another coin!", "Bark! This coin already has liquidity!"],
+            invalidMemeCoin: ["Woof! Invalid meme coin, try another, pup!", "Arf! That coin isn't valid, pick another!", "Bark! Wrong coin, select a valid one!"],
+            notCreator: ["Woof! You didn't create this coin, pup!", "Arf! Only the creator can add liquidity!", "Bark! Not your coin, try another!"],
+            insufficientJOKB: ["Woof! Not enough JOKB in contract, pup!", "Arf! Contract needs more JOKB!", "Bark! Low JOKB balance in contract!"],
+            insufficientGas: ["Woof! Not enough OKB for gas, check your balance, pup!", "Arf! Gas funds too low, try again!", "Bark! Need more OKB for gas!"],
+            insufficientOKB: ["Woof! Not enough OKB, check your balance, pup!", "Arf! OKB balance too low, top up!", "Bark! Need more OKB to deposit!"]
+        };
+
+        function getRandomMessage(type) {
+            const messages = dogMessages[type];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        async function copyToClipboard(address) {
+            try {
+                await navigator.clipboard.writeText(address);
+                document.getElementById('dogMessage').innerText = getRandomMessage('copySuccess');
+            } catch (error) {
+                console.error("Copy to clipboard error:", error);
+                document.getElementById('dogMessage').innerText = getRandomMessage('copyFail');
+            }
+        }
+
+        async function initializeWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    account = (await web3.eth.getAccounts())[0];
+                    console.log("Wallet connected:", account);
+                    document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
+                    await switchNetwork('XLayer');
+                    await initializeContracts();
+                    await updateBalances();
+                    await updateRecentMemeCoins();
+                    document.getElementById('networkStatus').innerText = `Connected to X Layer`;
+                    document.getElementById('dogMessage').innerText = getRandomMessage('connectSuccess');
+                } catch (error) {
+                    console.error("Connection error:", error);
+                    document.getElementById('networkStatus').innerText = 'Failed to connect wallet';
+                    document.getElementById('dogMessage').innerText = getRandomMessage('connectFail');
+                }
+            } else {
+                console.error("MetaMask not detected");
+                document.getElementById('networkStatus').innerText = 'Please install MetaMask';
+                document.getElementById('dogMessage').innerText = 'Woof! MetaMask not found, pup!';
+            }
+        }
+
+        async function switchNetwork(chain) {
+            const chainConfig = chains[chain];
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainConfig.chainId.toString(16)}` }]
+                });
+                console.log("Switched to network:", chainConfig.chainName);
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: `0x${chainConfig.chainId.toString(16)}`,
+                            chainName: chainConfig.chainName,
+                            rpcUrls: [chainConfig.rpcUrl],
+                            nativeCurrency: chainConfig.nativeCurrency,
+                            blockExplorerUrls: [chainConfig.blockExplorer]
+                        }]
+                    });
+                    console.log("Added network:", chainConfig.chainName);
+                } else {
+                    console.error("Network switch error:", switchError);
+                    throw switchError;
+                }
+            }
+        }
+
+        async function initializeContracts() {
+            try {
+                jokbLaunchpadContract = new web3.eth.Contract(JOKBlaunchpadAbi, web3.utils.toChecksumAddress(JOKBlaunchpadAddress));
+                jokbContract = new web3.eth.Contract(JOKBAbi, web3.utils.toChecksumAddress(JOKBAddress));
+                console.log("Contracts initialized successfully");
+            } catch (error) {
+                console.error("Contract initialization error:", error);
+                document.getElementById('networkStatus').innerText = 'Failed to initialize contracts';
+                document.getElementById('dogMessage').innerText = 'Woof! Contract setup failed, pup!';
+            }
+        }
+
+        async function updateBalances() {
+            if (!web3 || !account) {
+                console.log("No web3 or account, skipping balance update");
+                return;
+            }
+            try {
+                const okbBalance = await web3.eth.getBalance(account);
+                const jokbBalance = await jokbContract.methods.balanceOf(account).call();
+                document.getElementById('okbBalance').innerText = `Balance: ${Number(web3.utils.fromWei(okbBalance, 'ether')).toLocaleString()}`;
+                document.getElementById('jokbBalance').innerText = `Balance: ${Number(web3.utils.fromWei(jokbBalance, 'ether')).toLocaleString()}`;
+                console.log("Balances updated:", { okbBalance, jokbBalance });
+            } catch (error) {
+                console.error("Balance update error:", error);
+                document.getElementById('okbBalance').innerText = 'Balance: Error';
+                document.getElementById('jokbBalance').innerText = 'Balance: Error';
+            }
+        }
+
+        async function updateRecentMemeCoins() {
+            if (!web3 || !account) {
+                console.log("No web3 or account, skipping updateRecentMemeCoins");
+                document.getElementById('recentMemeCoins').innerHTML = '<p>Please connect wallet to view meme coins.</p>';
+                document.getElementById('memeCoinList').innerHTML = '<div class="meme-coin-card">Please connect wallet to select a meme coin.</div>';
+                return;
+            }
+            try {
+                console.log("Fetching recent meme coins for:", account);
+                const memeCoins = await jokbLaunchpadContract.methods.getRecentMemeCoins(account).call({ gas: web3.utils.toHex(1000000) });
+                console.log("Meme coins fetched:", memeCoins);
+                const recentContainer = document.getElementById('recentMemeCoins');
+                const listContainer = document.getElementById('memeCoinList');
+                recentContainer.innerHTML = '';
+                listContainer.innerHTML = '';
+                if (memeCoins.length === 0) {
+                    console.log("No meme coins found");
+                    recentContainer.innerHTML = '<p>No meme coins deployed yet. Deploy one above!</p>';
+                    listContainer.innerHTML = '<div class="meme-coin-card">No meme coins available. Deploy one above!</div>';
+                } else {
+                    memeCoins.forEach(coin => {
+                        const checksumAddress = web3.utils.toChecksumAddress(coin.memeCoin);
+                        const liquidityStatus = coin.pair === '0x0000000000000000000000000000000000000000' ? 'No liquidity' : 'Liquidity added';
+                        // Populate recent meme coins
+                        const p = document.createElement('p');
+                        p.innerHTML = `${coin.name} (${coin.symbol}): <span class="copyable-address" onclick="copyToClipboard('${checksumAddress}')">${checksumAddress}</span> - ${liquidityStatus}`;
+                        recentContainer.appendChild(p);
+                        // Populate selection cards
+                        const card = document.createElement('div');
+                        card.className = 'meme-coin-card';
+                        card.innerText = `${coin.name} (${coin.symbol})`;
+                        card.dataset.address = checksumAddress;
+                        card.onclick = () => selectMemeCoin(checksumAddress, card);
+                        listContainer.appendChild(card);
+                    });
+                }
+                console.log("Cards populated, triggering checkLiquidityStatus");
+                checkLiquidityStatus();
+            } catch (error) {
+                console.error("Recent meme coins error:", error);
+                document.getElementById('recentMemeCoins').innerHTML = '<p>Error fetching meme coins. Deploy a new coin or check network.</p>';
+                document.getElementById('memeCoinList').innerHTML = '<div class="meme-coin-card">Error fetching meme coins. Deploy a new coin or check network.</div>';
+                document.getElementById('dogMessage').innerText = getRandomMessage('invalidInput');
+                checkLiquidityStatus();
+            }
+        }
+
+        function selectMemeCoin(address, card) {
+            selectedMemeCoinAddress = address;
+            // Remove 'selected' class from all cards
+            document.querySelectorAll('.meme-coin-card').forEach(c => c.classList.remove('selected'));
+            // Add 'selected' class to clicked card
+            card.classList.add('selected');
+            console.log("Selected meme coin:", address);
+            checkLiquidityStatus();
+        }
+
+        async function waitForTransaction(txHash) {
+            let receipt = null;
+            const maxAttempts = 30;
+            let attempts = 0;
+            while (attempts < maxAttempts) {
+                receipt = await web3.eth.getTransactionReceipt(txHash);
+                if (receipt) {
+                    if (receipt.status) return receipt;
+                    throw new Error(`Transaction ${txHash} failed`);
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                attempts++;
+            }
+            throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
+        }
+
+        async function setDepositPercentage(percentage) {
+            if (!web3 || !account) {
+                console.log("No web3 or account, skipping setDepositPercentage");
+                return;
+            }
+            try {
+                const balance = await web3.eth.getBalance(account);
+                const balanceEther = Number(web3.utils.fromWei(balance, 'ether'));
+                let amount;
+                if (percentage === 1) {
+                    amount = balanceEther - 0.001; // Reserve some OKB for gas
+                } else {
+                    amount = balanceEther * percentage;
+                }
+                if (amount <= 0) amount = 0;
+                document.getElementById('depositAmount').value = amount.toFixed(8);
+                console.log("Deposit percentage set:", percentage, "Amount:", amount);
+            } catch (error) {
+                console.error("Set deposit percentage error:", error);
+                document.getElementById('dogMessage').innerText = getRandomMessage('depositFail');
+            }
+        }
+
+        async function setWithdrawPercentage(percentage) {
+            if (!web3 || !account) {
+                console.log("No web3 or account, skipping setWithdrawPercentage");
+                return;
+            }
+            try {
+                const balance = await jokbContract.methods.balanceOf(account).call();
+                const balanceEther = Number(web3.utils.fromWei(balance, 'ether'));
+                let amount;
+                if (percentage === 1) {
+                    amount = balanceEther - 0.0001;
+                } else {
+                    amount = balanceEther * percentage;
+                }
+                if (amount <= 0) amount = 0;
+                document.getElementById('withdrawAmount').value = amount.toFixed(8);
+                console.log("Withdraw percentage set:", percentage, "Amount:", amount);
+            } catch (error) {
+                console.error("Set withdraw percentage error:", error);
+                document.getElementById('dogMessage').innerText = getRandomMessage('withdrawFail');
+            }
+        }
+
+        async function depositJOKB() {
+            const status = document.getElementById('networkStatus');
+            const depositButton = document.getElementById('depositButton');
+            const dogMessage = document.getElementById('dogMessage');
+            const amount = document.getElementById('depositAmount').value.trim();
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (!amount || parseFloat(amount) <= 0) {
+                status.innerText = "Please enter a valid amount.";
+                dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            try {
+                depositButton.disabled = true;
+                depositButton.innerHTML = 'Depositing... <span class="spinner"></span>';
+                status.innerText = "Checking OKB balance...";
+                dogMessage.innerText = getRandomMessage('depositStart');
+
+                const amountWei = web3.utils.toWei(amount, 'ether');
+                const okbBalance = await web3.eth.getBalance(account);
+                const gasPrice = await web3.eth.getGasPrice();
+                const estimatedGas = await jokbContract.methods.deposit().estimateGas({
+                    from: account,
+                    value: amountWei
+                });
+                const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(estimatedGas));
+                const totalRequired = web3.utils.toBN(amountWei).add(gasCost);
+
+                if (web3.utils.toBN(okbBalance).lt(totalRequired)) {
+                    status.innerText = "Insufficient OKB balance for deposit and gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientOKB');
+                    return;
+                }
+
+                // Perform deposit
+                const tx = await jokbContract.methods.deposit().send({
+                    from: account,
+                    value: amountWei,
+                    gas: web3.utils.toHex(Math.min(estimatedGas * 2, 1000000))
+                });
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = "Deposit successful!";
+                dogMessage.innerText = getRandomMessage('depositSuccess');
+                await updateBalances();
+            } catch (error) {
+                console.error("Deposit error:", error);
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else if (error.message.includes('insufficient funds')) {
+                    status.innerText = "Insufficient OKB for deposit or gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientOKB');
+                } else if (error.message.includes('Invalid sender address')) {
+                    status.innerText = "Invalid sender address.";
+                    dogMessage.innerText = getRandomMessage('depositFail');
+                } else {
+                    status.innerText = "Deposit failed: " + (error.message || "Unknown error");
+                    dogMessage.innerText = getRandomMessage('depositFail');
+                }
+            } finally {
+                depositButton.disabled = false;
+                depositButton.innerHTML = 'Deposit';
+            }
+        }
+
+        async function withdrawJOKB() {
+            const status = document.getElementById('networkStatus');
+            const withdrawButton = document.getElementById('withdrawButton');
+            const dogMessage = document.getElementById('dogMessage');
+            const amount = document.getElementById('withdrawAmount').value.trim();
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (!amount || parseFloat(amount) <= 0) {
+                status.innerText = "Please enter a valid amount.";
+                dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            try {
+                withdrawButton.disabled = true;
+                withdrawButton.innerHTML = 'Withdrawing... <span class="spinner"></span>';
+                status.innerText = "Checking JOKB balance...";
+                dogMessage.innerText = getRandomMessage('withdrawStart');
+
+                const amountWei = web3.utils.toWei(amount, 'ether');
+                const jokbBalance = await jokbContract.methods.balanceOf(account).call();
+                if (web3.utils.toBN(jokbBalance).lt(web3.utils.toBN(amountWei))) {
+                    status.innerText = "Insufficient JOKB balance.";
+                    dogMessage.innerText = getRandomMessage('withdrawFail');
+                    return;
+                }
+
+                // Check native OKB balance for gas
+                const gasPrice = await web3.eth.getGasPrice();
+                const estimatedGas = await jokbContract.methods.withdraw(amountWei).estimateGas({ from: account });
+                const nativeBalance = await web3.eth.getBalance(account);
+                const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(estimatedGas));
+                if (web3.utils.toBN(nativeBalance).lt(gasCost)) {
+                    status.innerText = "Insufficient OKB for gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientGas');
+                    return;
+                }
+
+                // Perform withdrawal
+                const tx = await jokbContract.methods.withdraw(amountWei).send({
+                    from: account,
+                    gas: web3.utils.toHex(Math.min(estimatedGas * 2, 1000000))
+                });
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = "Withdrawal successful!";
+                dogMessage.innerText = getRandomMessage('withdrawSuccess');
+                await updateBalances();
+            } catch (error) {
+                console.error("Withdraw error:", error);
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else if (error.message.includes('insufficient funds for gas')) {
+                    status.innerText = "Insufficient OKB for gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientGas');
+                } else if (error.message.includes('Insufficient balance for withdrawal')) {
+                    status.innerText = "Insufficient JOKB balance.";
+                    dogMessage.innerText = getRandomMessage('withdrawFail');
+                } else {
+                    status.innerText = "Withdrawal failed: " + (error.message || "Unknown error");
+                    dogMessage.innerText = getRandomMessage('withdrawFail');
+                }
+            } finally {
+                withdrawButton.disabled = false;
+                withdrawButton.innerHTML = 'Withdraw';
+            }
+        }
+
+        async function deployMemeCoin() {
+            const status = document.getElementById('networkStatus');
+            const deployButton = document.getElementById('deployMemeCoinButton');
+            const dogMessage = document.getElementById('dogMessage');
+            const name = document.getElementById('memeCoinName').value.trim();
+            const symbol = document.getElementById('memeCoinSymbol').value.trim();
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (!name || !symbol) {
+                status.innerText = "Please enter valid token name and symbol.";
+                dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            try {
+                deployButton.disabled = true;
+                deployButton.innerHTML = 'Deploying... <span class="spinner"></span>';
+                status.innerText = "Deploying meme coin...";
+                dogMessage.innerText = getRandomMessage('deployStart');
+
+                const estimatedGas = await jokbLaunchpadContract.methods.deployMemeCoin(name, symbol).estimateGas({ from: account });
+                const tx = await jokbLaunchpadContract.methods.deployMemeCoin(name, symbol).send({
+                    from: account,
+                    gas: web3.utils.toHex(Math.min(estimatedGas * 2, 3000000))
+                });
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = "Meme coin deployed successfully!";
+                dogMessage.innerText = getRandomMessage('deploySuccess');
+                await updateRecentMemeCoins();
+            } catch (error) {
+                console.error("Deploy error:", error);
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else if (error.message.includes('insufficient funds for gas')) {
+                    status.innerText = "Insufficient OKB for gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientGas');
+                } else {
+                    status.innerText = "Deployment failed: " + (error.message || "Unknown error");
+                    dogMessage.innerText = getRandomMessage('deployFail');
+                }
+            } finally {
+                deployButton.disabled = false;
+                deployButton.innerHTML = 'Deploy Meme Coin';
+            }
+        }
+
+        async function checkLiquidityStatus() {
+            const launchButton = document.getElementById('launchButton');
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+
+            console.log("checkLiquidityStatus called with address:", selectedMemeCoinAddress);
+
+            launchButton.disabled = true;
+
+            if (!web3 || !account) {
+                console.log("No web3 or account, disabling Launch button");
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (!selectedMemeCoinAddress) {
+                console.log("No address selected, disabling Launch button");
+                status.innerText = "Please select a meme coin.";
+                dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            try {
+                const hasLiquidity = await jokbLaunchpadContract.methods.hasLiquidityAdded(selectedMemeCoinAddress).call();
+                if (hasLiquidity) {
+                    status.innerText = "Liquidity already added for this coin.";
+                    dogMessage.innerText = getRandomMessage('liquidityExists');
+                    return;
+                }
+                console.log("Valid address selected, enabling Launch button:", selectedMemeCoinAddress);
+                launchButton.disabled = false;
+                status.innerText = "Ready to launch liquidity.";
+                dogMessage.innerText = "Woof! Ready to launch, pup!";
+            } catch (error) {
+                console.error("Check liquidity status error:", error);
+                status.innerText = "Error checking liquidity status.";
+                dogMessage.innerText = getRandomMessage('invalidMemeCoin');
+            }
+        }
+
+        async function launchLiquidity() {
+            const status = document.getElementById('networkStatus');
+            const launchButton = document.getElementById('launchButton');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (!selectedMemeCoinAddress) {
+                status.innerText = "Please select a meme coin.";
+                dogMessage.innerText = getRandomMessage('invalidInput');
+                return;
+            }
+
+            try {
+                const checksumAddress = web3.utils.toChecksumAddress(selectedMemeCoinAddress);
+                console.log("Launching liquidity for:", checksumAddress);
+                launchButton.disabled = true;
+                launchButton.innerHTML = 'Launching... <span class="spinner"></span>';
+                status.innerText = "Launching liquidity...";
+                dogMessage.innerText = getRandomMessage('liquidityStart');
+
+                const estimatedGas = await jokbLaunchpadContract.methods.addLiquidity(checksumAddress).estimateGas({ from: account });
+                console.log("Estimated gas for addLiquidity:", estimatedGas);
+                const tx = await jokbLaunchpadContract.methods.addLiquidity(checksumAddress).send({
+                    from: account,
+                    gas: web3.utils.toHex(Math.min(estimatedGas * 2, 10000000))
+                });
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = "Liquidity launched successfully!";
+                dogMessage.innerText = getRandomMessage('liquiditySuccess');
+                await updateRecentMemeCoins();
+            } catch (error) {
+                console.error("Liquidity error:", error);
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else if (error.message.includes('insufficient funds for gas')) {
+                    status.innerText = "Insufficient OKB for gas.";
+                    dogMessage.innerText = getRandomMessage('insufficientGas');
+                } else if (error.message.includes('Meme coin does not exist')) {
+                    status.innerText = "Invalid meme coin.";
+                    dogMessage.innerText = getRandomMessage('invalidMemeCoin');
+                } else if (error.message.includes('Meme coin not created by user')) {
+                    status.innerText = "You didn't create this coin.";
+                    dogMessage.innerText = getRandomMessage('notCreator');
+                } else if (error.message.includes('Liquidity already added')) {
+                    status.innerText = "Liquidity already added for this coin.";
+                    dogMessage.innerText = getRandomMessage('liquidityExists');
+                } else if (error.message.includes('Not enough wOKB in contract')) {
+                    status.innerText = "Insufficient JOKB in contract.";
+                    dogMessage.innerText = getRandomMessage('insufficientJOKB');
+                } else {
+                    status.innerText = "Launch failed: " + (error.message || "Unknown error");
+                    dogMessage.innerText = getRandomMessage('liquidityFail');
+                }
+            } finally {
+                launchButton.disabled = false;
+                launchButton.innerHTML = 'Launch';
+                checkLiquidityStatus();
+            }
+        }
+
+        document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
+        document.getElementById('depositButton').addEventListener('click', depositJOKB);
+        document.getElementById('withdrawButton').addEventListener('click', withdrawJOKB);
+        document.getElementById('deployMemeCoinButton').addEventListener('click', deployMemeCoin);
+        document.getElementById('launchButton').addEventListener('click', launchLiquidity);
+
+        // Initialize checkLiquidityStatus on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Page loaded, initializing checkLiquidityStatus");
+            checkLiquidityStatus();
+        });
+    </script>
+</body>
+</html>
